@@ -1,20 +1,20 @@
-import logging
-import logging.config
 import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import logging.config
 from datetime import datetime
 import pytest
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
-
+from webdriver_manager.firefox import GeckoDriverManager
 from pages.login_page import LoginPage
 
-# Configuración del logging
-logging.config.fileConfig("logging_conf")
+logging.config.fileConfig("logging.conf")
 logger = logging.getLogger(__name__)
 
 
@@ -52,7 +52,6 @@ def driver(request):
 
 
 def take_screenshot(driver, test_name):
-    """Toma una captura de pantalla y la guarda en reports/screenshots/ con timestamp."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     screenshot_dir = "reports/screenshots"
     os.makedirs(screenshot_dir, exist_ok=True)
@@ -81,8 +80,8 @@ def test_login_scenarios(driver, request, username, expected_error):
     login_page.enter_username(username)
     login_page.enter_password("secret_sauce")
     login_page.click_login()
-    error_message = login_page.get_error_message()
 
+    error_message = login_page.get_error_message()
     if error_message:
         screenshot_path = take_screenshot(driver, request.node.name)
         logger.error(
@@ -90,6 +89,7 @@ def test_login_scenarios(driver, request, username, expected_error):
         )
 
     if not expected_error and username in [
+        "standard_user",
         "problem_user",
         "error_user",
         "visual_user",
@@ -98,7 +98,7 @@ def test_login_scenarios(driver, request, username, expected_error):
         assert driver.current_url.endswith(
             "/inventory.html"
         ), f"{username} no redirigió a inventario"
-
-    assert (
-        error_message == expected_error
-    ), f"Error esperado: {expected_error}, obtenido: {error_message}"
+    else:
+        assert (
+            error_message == expected_error
+        ), f"Error esperado: {expected_error}, obtenido: {error_message}"

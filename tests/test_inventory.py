@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 logger.info("Configurando pruebas de inventario")
 
 
-
 def setup_browser(browser_name, headless):
     logger.info(f"Configurando navegador: {browser_name}, headless: {headless}")
     if browser_name.lower() == "firefox":
