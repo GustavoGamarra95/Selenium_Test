@@ -1,4 +1,4 @@
-import logging
+import logging.config
 
 import pytest
 from selenium import webdriver
@@ -12,6 +12,8 @@ from pages.login_page import LoginPage
 
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger(__name__)
+logger.info("Configurando pruebas de inventario")
+
 
 
 def setup_browser(browser_name, headless):
