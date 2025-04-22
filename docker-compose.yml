@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  tests:
+    build: .
+    volumes:
+      - ./reports:/app/reports
+    environment:
+      - BASE_URL=https://www.saucedemo.com
+    command: ["./generate_html_report.sh"]
