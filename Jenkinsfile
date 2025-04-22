@@ -22,11 +22,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh '''
-                    docker run --rm \
-                        -v "$PWD/${REPORTS_DIR}:/app/${REPORTS_DIR}" \
-                        qa-tests pytest --browser=firefox --headless
-                '''
+                sh 'docker run --rm -v $(pwd)/reports:/app/reports qa-tests ./generate_html_report.sh'
             }
         }
 
