@@ -14,8 +14,9 @@ from pages.checkout_page import CheckoutPage
 from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 
-logging.config.fileConfig('logging.conf')
+logging.config.fileConfig("logging.conf")
 logger = logging.getLogger(__name__)
+
 
 def setup_browser(browser_name, headless):
 
@@ -24,15 +25,20 @@ def setup_browser(browser_name, headless):
         options = FirefoxOptions()
         if headless:
             options.add_argument("--headless")
-        return webdriver.Firefox(service=Service(GeckoDriverManager().install()), options=options)
+        return webdriver.Firefox(
+            service=Service(GeckoDriverManager().install()), options=options
+        )
     elif browser_name.lower() == "chrome":
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless")
-        return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        return webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), options=options
+        )
     else:
         logger.error(f"Navegador no soportado: {browser_name}")
         raise ValueError(f"Navegador no soportado: {browser_name}")
+
 
 @pytest.fixture
 def driver(request):
@@ -54,6 +60,7 @@ def driver(request):
     logger.info("Cerrando navegador")
     driver.quit()
 
+
 def take_screenshot(driver, test_name):
     """Toma una captura de pantalla y la guarda en reports/screenshots/ con timestamp."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -64,12 +71,18 @@ def take_screenshot(driver, test_name):
     logger.info(f"Captura guardada: {screenshot_path}")
     return screenshot_path
 
-@pytest.mark.parametrize("first_name,last_name,zip_code,expected_error", [
-    ("John", "Doe", "12345", ""),
-    ("", "", "", "First Name is required"),
-    ("John", "Doe", "invalid", "Error"),
-])
-def test_checkout_scenarios(driver, request, first_name, last_name, zip_code, expected_error):
+
+@pytest.mark.parametrize(
+    "first_name,last_name,zip_code,expected_error",
+    [
+        ("John", "Doe", "12345", ""),
+        ("", "", "", "First Name is required"),
+        ("John", "Doe", "invalid", "Error"),
+    ],
+)
+def test_checkout_scenarios(
+    driver, request, first_name, last_name, zip_code, expected_error
+):
     logger.info(f"Probando checkout con nombre: {first_name}, apellido: {last_name}")
     checkout_page = CheckoutPage(driver)
     checkout_page.enter_details(first_name, last_name, zip_code)
@@ -77,9 +90,15 @@ def test_checkout_scenarios(driver, request, first_name, last_name, zip_code, ex
     error_message = checkout_page.get_error_message()
     if error_message:
         screenshot_path = take_screenshot(driver, request.node.name)
-        logger.error(f"Mensaje de error encontrado: {error_message}, captura: {screenshot_path}")
+        logger.error(
+            f"Mensaje de error encontrado: {error_message}, captura: {screenshot_path}"
+        )
     if not expected_error:
         checkout_page.click_finish()
-        assert "Thank you for your order!" in checkout_page.get_complete_message(), "Checkout no completado"
+        assert (
+            "Thank you for your order!" in checkout_page.get_complete_message()
+        ), "Checkout no completado"
     else:
-        assert expected_error in error_message, f"Error esperado: {expected_error}, obtenido: {error_message}"
+        assert (
+            expected_error in error_message
+        ), f"Error esperado: {expected_error}, obtenido: {error_message}"
