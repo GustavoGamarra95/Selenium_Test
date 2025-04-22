@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Crear directorios para reportes
+mkdir -p reports/allure-results reports/screenshots
+
 echo "Ejecutando pruebas y generando reporte HTML..."
 pytest \
     --browser=firefox \

@@ -14,6 +14,21 @@ from webdriver_manager.firefox import GeckoDriverManager
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger(__name__)
 
+def pytest_addoption(parser):
+    """Registra opciones personalizadas para pytest."""
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="firefox",
+        help="Navegador a usar: chrome o firefox",
+    )
+    parser.addoption(
+        "--headless",
+        action="store_true",
+        default=False,
+        help="Ejecutar en modo headless",
+    )
+
 def pytest_configure():
     """Configura el logging al inicio de la sesión de pytest."""
     logging.config.fileConfig("logging.conf")
