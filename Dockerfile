@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-slim
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Comando por defecto
-CMD ["pytest", "--browser=firefox", "--headless"]
+CMD ["pytest", "--browser=chrome", "--headless"]
