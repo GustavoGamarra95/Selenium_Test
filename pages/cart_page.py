@@ -1,31 +1,26 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
 
-
-class InventoryPage:
+class CartPage:
     def __init__(self, driver):
         self.driver = driver
         self.title = (By.CLASS_NAME, "title")
-        self.inventory_items = (By.CLASS_NAME, "inventory_item")
-        self.sort_dropdown = (By.CLASS_NAME, "product_sort_container")
-        self.cart_count = (By.CLASS_NAME, "shopping_cart_badge")
+        self.cart_items = (By.CLASS_NAME, "cart_item")
+        self.continue_shopping_button = (By.ID, "continue-shopping")
+        self.checkout_button = (By.ID, "checkout")
 
     def get_page_title(self):
         return self.driver.find_element(*self.title).text
 
-    def get_inventory_items(self):
-        return self.driver.find_elements(*self.inventory_items)
+    def get_cart_items(self):
+        return self.driver.find_elements(*self.cart_items)
 
-    def sort_by(self, option):
-        select = Select(self.driver.find_element(*self.sort_dropdown))
-        select.select_by_visible_text(option)
+    def remove_item(self, index):
+        items = self.get_cart_items()
+        # Actualizo este método para usar la API más reciente de Selenium
+        items[index].find_element(By.CSS_SELECTOR, "[data-test^='remove']").click()
 
-    def add_item_to_cart(self, index):
-        items = self.get_inventory_items()
-        items[index].find_element_by_css_selector("[data-test^='add-to-cart']").click()
+    def click_continue_shopping(self):
+        self.driver.find_element(*self.continue_shopping_button).click()
 
-    def get_cart_count(self):
-        try:
-            return self.driver.find_element(*self.cart_count).text
-        except:
-            return "0"
+    def click_checkout(self):
+        self.driver.find_element(*self.checkout_button).click()
