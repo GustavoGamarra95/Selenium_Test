@@ -2,13 +2,21 @@
 
 echo "Ejecutando pruebas y generando reporte HTML..."
 pytest \
+    --browser=firefox \
+    --headless \
     --html=reports/report.html \
     --self-contained-html \
     --alluredir=reports/allure-results \
     --reruns 2
 
-echo "Reporte HTML generado en reports/report.html"
+# Verificar si las pruebas se ejecutaron correctamente
+if [ $? -eq 0 ]; then
+  echo "Pruebas ejecutadas correctamente. Resultados en reports/allure-results."
+else
+  echo "Error al ejecutar las pruebas."
+  exit 1
+fi
 
-# Nota: El comando Allure debe ejecutarse en el host, no dentro del contenedor
+echo "Reporte HTML generado en reports/report.html"
 echo "Para generar el reporte Allure, ejecuta el siguiente comando en el host:"
-echo "docker run --rm -v \$(pwd)/reports/allure-results:/allure-results -v \$(pwd)/reports/allure-report:/allure-report frankescobar/allure generate /allure-results -o /allure-report"
+echo "docker run --rm -v \$(pwd)/reports/allure-results:/app/allure-results -v \$(pwd)/reports/allure-report:/app/allure-report frankescobar/allure-docker-service"
