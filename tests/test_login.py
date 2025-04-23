@@ -8,6 +8,7 @@ from pages.login_page import LoginPage
 
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.login
 @pytest.mark.parametrize(
     "username,expected_error",
@@ -18,7 +19,10 @@ logger = logging.getLogger(__name__)
         ("performance_glitch_user", ""),
         ("error_user", ""),
         ("visual_user", ""),
-        ("invalid_user", "Epic sadface: Username and password do not match any user in this service"),
+        (
+            "invalid_user",
+            "Epic sadface: Username and password do not match any user in this service",
+        ),
         ("", "Epic sadface: Username is required"),
     ],
 )
@@ -26,13 +30,13 @@ def test_login_scenarios(driver, request, username, expected_error):
     """Prueba escenarios de login para diferentes usuarios."""
     logger.info(f"Probando login con usuario: {username}")
     login_page = LoginPage(driver)
-    
+
     try:
         # Esperar a que el campo de usuario esté visible
         WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located(login_page.username_input)
         )
-        
+
         login_page.enter_username(username)
         login_page.enter_password("secret_sauce")
         login_page.click_login()
@@ -58,7 +62,7 @@ def test_login_scenarios(driver, request, username, expected_error):
             assert (
                 error_message == expected_error
             ), f"Error esperado: '{expected_error}', obtenido: '{error_message}'"
-            
+
     except Exception as e:
         screenshot_path = take_screenshot(driver, request.node.name)
         logger.error(f"Error durante la prueba: {str(e)}, captura: {screenshot_path}")

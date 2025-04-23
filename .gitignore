@@ -3,3 +3,4 @@ __pycache__/
 *.log
 reports/*.html
 reports/*.log
+reports/allure-results/*

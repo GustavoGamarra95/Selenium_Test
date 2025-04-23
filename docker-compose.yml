@@ -4,4 +4,5 @@ services:
     volumes:
       - ./reports:/app/reports
     environment:
-      - BASE_URL=https://www.saucedemo.com
+      - BASE_URL=https://www.saucedemo.com/
+      - GH_TOKEN=${GH_TOKEN}

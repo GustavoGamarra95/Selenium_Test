@@ -1,0 +1,1 @@
+INFO     tests.test_inventory:test_inventory.py:24 Iniciando prueba de inventario

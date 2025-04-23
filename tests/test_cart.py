@@ -9,6 +9,7 @@ from pages.login_page import LoginPage
 
 logger = logging.getLogger(__name__)
 
+
 @pytest.fixture
 def driver(request, driver):  # Usa la fixture driver de conftest.py
     login_page = LoginPage(driver)
@@ -25,6 +26,7 @@ def driver(request, driver):  # Usa la fixture driver de conftest.py
 
     logger.info(f"Iniciando prueba de checkout")
     yield driver
+
 
 @pytest.mark.parametrize(
     "first_name,last_name,zip_code,expected_error",

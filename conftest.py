@@ -40,16 +40,25 @@ def setup_browser(browser_name, headless):
         options = FirefoxOptions()
         if headless:
             options.add_argument("--headless")
-        return webdriver.Firefox(
-            service=FirefoxService(GeckoDriverManager().install()), options=options
-        )
+        # Verificar si GH_TOKEN está presente
+        if not os.getenv("GH_TOKEN"):
+            logger.warning("GH_TOKEN no está configurado. Puede haber problemas con el límite de tasa de la API de GitHub.")
+        try:
+            service = FirefoxService(GeckoDriverManager().install())
+            return webdriver.Firefox(service=service, options=options)
+        except Exception as e:
+            logger.error(f"Error al configurar Firefox: {str(e)}")
+            raise
     elif browser_name.lower() == "chrome":
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
-        return webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()), options=options
-        )
+        try:
+            service = ChromeService(ChromeDriverManager().install())
+            return webdriver.Chrome(service=service, options=options)
+        except Exception as e:
+            logger.error(f"Error al configurar Chrome: {str(e)}")
+            raise
     else:
         logger.error(f"Navegador no soportado: {browser_name}")
         raise ValueError(f"Navegador no soportado: {browser_name}")
